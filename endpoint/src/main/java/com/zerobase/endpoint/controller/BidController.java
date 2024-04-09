@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zerobase.domain.entity.Bid;
-import com.zerobase.endpoint.form.BidForm;
 import com.zerobase.endpoint.service.BidService;
+import com.zerobase.endpoint.transfer.BidForm;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

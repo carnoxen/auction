@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.zerobase.domain.entity.*;
 import com.zerobase.domain.repository.*;
-import com.zerobase.endpoint.form.BidForm;
+import com.zerobase.endpoint.transfer.BidForm;
 import com.zerobase.messaging.KafkaProperties;
 
 @Service
