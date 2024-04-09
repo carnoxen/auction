@@ -1,4 +1,4 @@
-package com.zerobase.endpoint.form;
+package com.zerobase.endpoint.transfer;
 
 import com.zerobase.domain.entity.Bid;
 import com.zerobase.domain.entity.Item;
@@ -16,9 +16,9 @@ public class BidForm {
 
     public Bid toEntity(User user, Item item) {
         return Bid.builder()
-        .user(user)
-        .item(item)
-        .value(value)
-        .build();
+            .user(user)
+            .item(item)
+            .value(value)
+            .build();
     }
 }
