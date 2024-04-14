@@ -8,7 +8,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public class Item {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private final String name;
@@ -28,8 +30,8 @@ public class Item {
     private Long start;
     @Column
     private final Integer timeout;
-    @Column
     @ManyToOne
+    @JoinColumn(name = "bidder_id")
     private User bidder;
     @UpdateTimestamp
     @Column

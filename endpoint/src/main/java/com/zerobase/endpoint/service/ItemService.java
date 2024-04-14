@@ -12,6 +12,10 @@ import com.zerobase.endpoint.transfer.ItemForm;
 public class ItemService {
     private ItemRepository itemRepository;
 
+    public ItemService(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
+
     public Item createItem(ItemForm itemForm) {
         Item item = itemForm.toEntity();
         return itemRepository.save(item);

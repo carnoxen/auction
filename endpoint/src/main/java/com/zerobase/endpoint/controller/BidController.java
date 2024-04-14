@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class BidController {
     private BidService bidService;
 
+    public BidController(BidService bidService) {
+        this.bidService = bidService;
+    }
+
     @PostMapping
     public Bid postBid(@RequestBody BidForm bidForm) {
         return bidService.createBid(bidForm);

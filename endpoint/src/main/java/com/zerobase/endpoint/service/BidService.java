@@ -17,6 +17,18 @@ public class BidService {
     private ItemRepository itemRepository;
     private BidRepository bidRepository;
 
+    public BidService(KafkaProperties kafkaProperties, 
+                        KafkaTemplate<String, Bid> kafkaTemplate,
+                        UserRepository userRepository,
+                        ItemRepository itemRepository,
+                        BidRepository bidRepository) {
+        this.kafkaProperties = kafkaProperties;
+        this.kafkaTemplate = kafkaTemplate;
+        this.bidRepository = bidRepository;
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+    }
+
     public Bid createBid(BidForm bidForm) {
         User user = userRepository.findById(bidForm.getUser_id()).orElseThrow();
         Item item = itemRepository.findById(bidForm.getItem_id()).orElseThrow();

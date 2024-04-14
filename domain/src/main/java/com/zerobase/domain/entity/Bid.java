@@ -1,9 +1,16 @@
 package com.zerobase.domain.entity;
 
+import java.sql.Date;
+import java.util.Calendar;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,16 +22,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public class Bid {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private final User user;
-    @Column
     @ManyToOne
+    @JoinColumn(name = "item_id")
     private final Item item;
     @Column
     private final Long value;
+    @Column
+    @CreationTimestamp
+    private final Date created_at = new Date(Calendar.getInstance().getTimeInMillis());
 
     @Builder
     private Bid(User user, Item item, Long value) {

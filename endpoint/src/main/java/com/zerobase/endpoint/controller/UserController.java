@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class UserController {
     private UserService userService;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @PostMapping
     public User postUser(@RequestBody UserForm entity) {
         return userService.createUser(entity);
