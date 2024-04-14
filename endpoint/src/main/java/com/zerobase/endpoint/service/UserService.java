@@ -12,6 +12,10 @@ import com.zerobase.endpoint.transfer.UserForm;
 public class UserService {
     private UserRepository userRepository;
 
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public User createUser(UserForm userForm) {
         User user = userForm.toEntity();
         return userRepository.save(user);

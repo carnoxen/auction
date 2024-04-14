@@ -5,10 +5,12 @@ import com.zerobase.domain.entity.Item;
 import com.zerobase.domain.entity.User;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 public class BidForm {
     private final Long user_id;
     private final Long item_id;

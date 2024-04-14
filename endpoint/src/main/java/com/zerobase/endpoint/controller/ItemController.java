@@ -22,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ItemController {
     private ItemService itemService;
 
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
+    }
+
     @PostMapping
     public Item postUser(@RequestBody ItemForm entity) {
         return itemService.createItem(entity);
