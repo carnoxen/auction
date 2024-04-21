@@ -1,5 +1,8 @@
 package com.zerobase.endpoint.service;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -39,13 +42,19 @@ public class BidService {
 
     @KafkaListener(topics = "${kafka.topic}")
     public void saveBid(Bid bid){
-        Item item = bid.getItem();
-        if (item.getStart() < bid.getValue()) {
-            item.setStart(bid.getValue());
-            item.setBidder(bid.getUser());
-            itemRepository.save(item);
-        }
-        
-        bidRepository.save(bid);
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.submit(() -> {
+            Item item = bid.getItem();
+            if (item.getStart() < bid.getValue()) {
+                item.setStart(bid.getValue());
+                item.setBidder(bid.getUser());
+                itemRepository.save(item);
+            }
+        });
+        executor.submit(() -> {
+            bidRepository.save(bid);
+        });
+
+        executor.shutdown();
     }
 }
