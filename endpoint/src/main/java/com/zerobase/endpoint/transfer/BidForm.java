@@ -23,4 +23,10 @@ public class BidForm {
             .value(value)
             .build();
     }
+
+    public static BidForm toForm(Bid bid) {
+        return new BidForm(bid.getUser().getId(), 
+            bid.getItem().getId(), 
+            bid.getValue());
+    }
 }

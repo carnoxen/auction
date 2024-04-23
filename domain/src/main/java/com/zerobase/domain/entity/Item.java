@@ -1,8 +1,9 @@
 package com.zerobase.domain.entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -23,23 +24,30 @@ public class Item {
     @Id
     @Tsid
     private Long id;
-    @Column
+    @Column(nullable = false)
     private final String name;
-    @Column
+    @Column(nullable = false)
     private Long start;
-    @Column
+    @Column(nullable = false)
     private final Integer timeout;
     @ManyToOne
-    @JoinColumn(name = "bidder_id")
-    private User bidder;
+    @JoinColumn(name = "owner_id", nullable = false)
+    private final User owner;
+    @CreationTimestamp
+    @Column(nullable = false)
+    private final Timestamp created_at = new Timestamp(Calendar.getInstance().getTimeInMillis());
     @UpdateTimestamp
-    @Column
-    private Date updated_at = new Date(Calendar.getInstance().getTimeInMillis());
+    @Column(nullable = false)
+    private Timestamp updated_at = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    @ManyToOne
+    @JoinColumn(name = "bidder_id")
+    private User bidder = null;
 
     @Builder
-    private Item(String name, Long start, Integer timeout) {
+    private Item(String name, Long start, Integer timeout, User owner) {
         this.name = name;
         this.start = start;
         this.timeout = timeout;
+        this.owner = owner;
     }
 }

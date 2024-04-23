@@ -15,4 +15,8 @@ public class UserForm {
     public User toEntity(){
         return User.builder().username(username).build();
     }
+
+    public static UserForm toForm(User user) {
+        return new UserForm(user.getUsername());
+    }
 }

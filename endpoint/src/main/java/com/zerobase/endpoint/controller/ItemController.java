@@ -3,7 +3,6 @@ package com.zerobase.endpoint.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.zerobase.domain.entity.Item;
 import com.zerobase.endpoint.service.ItemService;
 import com.zerobase.endpoint.transfer.ItemForm;
 
@@ -27,26 +26,26 @@ public class ItemController {
     }
 
     @PostMapping
-    public Item postUser(@RequestBody ItemForm entity) {
-        return itemService.createItem(entity);
+    public ItemForm postUser(@RequestBody ItemForm entity) {
+        return ItemForm.toForm(itemService.createItem(entity));
     }
     
     @GetMapping("/{id}")
-    public Item getUser(@PathVariable Long id) {
+    public ItemForm getUser(@PathVariable Long id) {
         var ouser = itemService.findItemById(id);
         if (!ouser.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return ouser.get();
+        return ItemForm.toForm(ouser.get());
     }
     
     @PutMapping("/{id}")
-    public Item putUser(@PathVariable Long id, @RequestBody ItemForm entity) {
+    public ItemForm putUser(@PathVariable Long id, @RequestBody ItemForm entity) {
         var ouser = itemService.findItemById(id);
         if (!ouser.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return itemService.editItem(entity, id);
+        return ItemForm.toForm(itemService.editItem(entity, id));
     }
     
     @DeleteMapping("/{id}")

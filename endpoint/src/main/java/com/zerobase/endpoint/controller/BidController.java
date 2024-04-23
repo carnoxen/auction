@@ -3,7 +3,6 @@ package com.zerobase.endpoint.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zerobase.domain.entity.Bid;
 import com.zerobase.endpoint.service.BidService;
 import com.zerobase.endpoint.transfer.BidForm;
 
@@ -21,7 +20,9 @@ public class BidController {
     }
 
     @PostMapping
-    public Bid postBid(@RequestBody BidForm bidForm) {
-        return bidService.createBid(bidForm);
+    public String postBid(@RequestBody BidForm bidForm) {
+        bidService.createBid(bidForm);
+        return String.format("User %d bid an item %d.", 
+            bidForm.getUser_id(), bidForm.getItem_id());
     }
 }

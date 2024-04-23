@@ -1,9 +1,11 @@
 package com.zerobase.endpoint.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.zerobase.domain.entity.Item;
 import com.zerobase.domain.entity.User;
 import com.zerobase.domain.repository.UserRepository;
 import com.zerobase.endpoint.transfer.UserForm;
@@ -23,6 +25,11 @@ public class UserService {
 
     public Optional<User> findUserById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public List<Item> findItems(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        return user.getItems();
     }
 
     public User editUser(UserForm userForm, Long id) {
