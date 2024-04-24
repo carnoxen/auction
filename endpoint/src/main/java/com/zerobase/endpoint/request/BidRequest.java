@@ -7,13 +7,14 @@ import com.zerobase.domain.entity.Bid;
 import com.zerobase.domain.entity.Item;
 import com.zerobase.domain.entity.User;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
-@NoArgsConstructor(force = true)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public class BidRequest {
     private final Long user_id;
     private final Long item_id;
