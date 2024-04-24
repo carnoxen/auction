@@ -1,14 +1,14 @@
 package com.zerobase.endpoint.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.zerobase.domain.entity.Item;
-import com.zerobase.domain.entity.User;
 import com.zerobase.domain.repository.UserRepository;
-import com.zerobase.endpoint.transfer.UserForm;
+import com.zerobase.endpoint.request.UserRequest;
+import com.zerobase.endpoint.response.ItemResponse;
+import com.zerobase.endpoint.response.UserResponse;
 
 @Service
 public class UserService {
@@ -18,24 +18,27 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(UserForm userForm) {
-        User user = userForm.toEntity();
-        return userRepository.save(user);
+    public UserResponse createUser(UserRequest userForm) {
+        var user = userForm.toEntity();
+        return UserResponse.toForm(userRepository.save(user));
     }
 
-    public Optional<User> findUserById(Long id) {
-        return userRepository.findById(id);
+    public UserResponse findUserById(Long id) {
+        var user = userRepository.findById(id).orElseThrow();
+        return UserResponse.toForm(user);
     }
 
-    public List<Item> findItems(Long id) {
-        User user = userRepository.findById(id).orElseThrow();
-        return user.getItems();
+    @Transactional(readOnly = true)
+    public List<ItemResponse> findItems(Long id) {
+        var user = userRepository.findById(id).orElseThrow();
+        var items = user.getItems();
+        return items.stream().map(ItemResponse::toForm).toList();
     }
 
-    public User editUser(UserForm userForm, Long id) {
-        User user = userForm.toEntity();
+    public UserResponse editUser(UserRequest userForm, Long id) {
+        var user = userForm.toEntity();
         user.setId(id);
-        return userRepository.save(user);
+        return UserResponse.toForm(userRepository.save(user));
     }
 
     public void deleteUser(Long id) {

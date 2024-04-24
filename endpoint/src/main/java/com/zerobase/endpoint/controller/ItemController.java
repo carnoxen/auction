@@ -1,12 +1,11 @@
 package com.zerobase.endpoint.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.zerobase.endpoint.request.ItemRequest;
+import com.zerobase.endpoint.response.ItemResponse;
 import com.zerobase.endpoint.service.ItemService;
-import com.zerobase.endpoint.transfer.ItemForm;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,26 +25,21 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemForm postUser(@RequestBody ItemForm entity) {
-        return ItemForm.toForm(itemService.createItem(entity));
+    public ItemResponse postUser(@RequestBody ItemRequest entity) {
+        var itemRes = itemService.createItem(entity);
+        return itemRes;
     }
     
     @GetMapping("/{id}")
-    public ItemForm getUser(@PathVariable Long id) {
-        var ouser = itemService.findItemById(id);
-        if (!ouser.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return ItemForm.toForm(ouser.get());
+    public ItemResponse getUser(@PathVariable Long id) {
+        var itemRes = itemService.findItemById(id);
+        return itemRes;
     }
     
     @PutMapping("/{id}")
-    public ItemForm putUser(@PathVariable Long id, @RequestBody ItemForm entity) {
-        var ouser = itemService.findItemById(id);
-        if (!ouser.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return ItemForm.toForm(itemService.editItem(entity, id));
+    public ItemResponse putUser(@PathVariable Long id, @RequestBody ItemRequest entity) {
+        var itemRes = itemService.editItem(entity, id);
+        return itemRes;
     }
     
     @DeleteMapping("/{id}")

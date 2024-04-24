@@ -1,12 +1,10 @@
 package com.zerobase.domain.entity;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.util.List;
@@ -27,14 +25,18 @@ public class User {
     private Long id;
     @Column(unique = true)
     private final String username;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    @OneToMany(mappedBy = "owner")
     private List<Item> items;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp created_at = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    private final Timestamp created_at;
 
     @Builder
-    private User(String username) {
+    private User(
+        String username,
+        Timestamp created_at
+    ) {
         this.username = username;
+        this.created_at = created_at;
     }
 }

@@ -1,7 +1,6 @@
 package com.zerobase.domain.entity;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -35,19 +34,27 @@ public class Item {
     private final User owner;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp created_at = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    private final Timestamp created_at;
     @UpdateTimestamp
     @Column(nullable = false)
-    private Timestamp updated_at = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    private Timestamp updated_at;
     @ManyToOne
     @JoinColumn(name = "bidder_id")
     private User bidder = null;
 
     @Builder
-    private Item(String name, Long start, Integer timeout, User owner) {
+    private Item(
+        String name, 
+        Long start, 
+        Integer timeout, 
+        User owner,
+        Timestamp created_at
+    ) {
         this.name = name;
         this.start = start;
         this.timeout = timeout;
         this.owner = owner;
+        this.created_at = created_at;
+        this.updated_at = created_at;
     }
 }

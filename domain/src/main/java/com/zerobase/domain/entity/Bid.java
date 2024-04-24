@@ -1,7 +1,6 @@
 package com.zerobase.domain.entity;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -33,12 +32,18 @@ public class Bid {
     private final Long value;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp created_at = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    private final Timestamp created_at;
 
     @Builder
-    private Bid(User user, Item item, Long value) {
+    private Bid(
+        User user, 
+        Item item, 
+        Long value,
+        Timestamp created_at
+    ) {
         this.user = user;
         this.item = item;
         this.value = value;
+        this.created_at = created_at;
     }
 }
