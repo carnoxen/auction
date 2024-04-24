@@ -23,10 +23,10 @@ public class Bid {
     @Tsid
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(nullable = false)
     private final User user;
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(nullable = false)
     private final Item item;
     @Column(nullable = false)
     private final Long value;

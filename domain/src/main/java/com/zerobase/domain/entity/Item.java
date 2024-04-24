@@ -30,7 +30,7 @@ public class Item {
     @Column(nullable = false)
     private final Integer timeout;
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(nullable = false)
     private final User owner;
     @CreationTimestamp
     @Column(nullable = false)
@@ -39,7 +39,7 @@ public class Item {
     @Column(nullable = false)
     private Timestamp updated_at;
     @ManyToOne
-    @JoinColumn(name = "bidder_id")
+    @JoinColumn
     private User bidder = null;
 
     @Builder
