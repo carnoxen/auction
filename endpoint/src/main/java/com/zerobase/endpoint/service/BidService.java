@@ -1,6 +1,5 @@
 package com.zerobase.endpoint.service;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.springframework.kafka.annotation.KafkaListener;
@@ -9,22 +8,26 @@ import org.springframework.stereotype.Service;
 
 import com.zerobase.domain.entity.*;
 import com.zerobase.domain.repository.*;
-import com.zerobase.endpoint.transfer.BidForm;
+import com.zerobase.endpoint.request.BidRequest;
 import com.zerobase.messaging.KafkaProperties;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 public class BidService {
     private KafkaProperties kafkaProperties;
-    private KafkaTemplate<String, Bid> kafkaTemplate;
+    private KafkaTemplate<String, BidRequest> kafkaTemplate;
     private UserRepository userRepository;
     private ItemRepository itemRepository;
     private BidRepository bidRepository;
 
-    public BidService(KafkaProperties kafkaProperties, 
-                        KafkaTemplate<String, Bid> kafkaTemplate,
-                        UserRepository userRepository,
-                        ItemRepository itemRepository,
-                        BidRepository bidRepository) {
+    public BidService(
+        KafkaProperties kafkaProperties, 
+        KafkaTemplate<String, BidRequest> kafkaTemplate,
+        UserRepository userRepository,
+        ItemRepository itemRepository,
+        BidRepository bidRepository
+    ) {
         this.kafkaProperties = kafkaProperties;
         this.kafkaTemplate = kafkaTemplate;
         this.bidRepository = bidRepository;
@@ -32,26 +35,38 @@ public class BidService {
         this.userRepository = userRepository;
     }
 
-    public Bid createBid(BidForm bidForm) {
-        User user = userRepository.findById(bidForm.getUser_id()).orElseThrow();
-        Item item = itemRepository.findById(bidForm.getItem_id()).orElseThrow();
-        Bid bid = bidForm.toEntity(user, item);
-        kafkaTemplate.send(kafkaProperties.getTopic(), bid);
-        return bid;
+    public void createBid(BidRequest bidForm) {
+        log.info("send a request to kafka to make a bid");
+        kafkaTemplate.send(kafkaProperties.getTopic(), bidForm);
     }
 
     @KafkaListener(topics = "${kafka.topic}")
-    public void saveBid(Bid bid){
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+    public void saveBid(BidRequest bidForm){
+        Item item = itemRepository
+            .findById(bidForm.getItem_id())
+            .orElseThrow();
+        User bidder = userRepository
+            .findById(bidForm.getUser_id())
+            .orElseThrow();
+
+        var executor = Executors.newFixedThreadPool(2);
         executor.submit(() -> {
-            Item item = bid.getItem();
-            if (item.getStart() < bid.getValue()) {
-                item.setStart(bid.getValue());
-                item.setBidder(bid.getUser());
+            log.info("update item start");
+            boolean isValueGreaterThanItem = item.getStart() < bidForm.getValue();
+            boolean isBidderNotOwner = item.getOwner().getId() != bidForm.getUser_id();
+            boolean availableInTimeout = bidForm.getCreated_at().getTime() <=
+                (item.getUpdated_at().getTime() + (long) item.getTimeout() * 1000l);
+
+            if (isValueGreaterThanItem && isBidderNotOwner && availableInTimeout) {
+                log.info("item update succeeded");
+                item.setStart(bidForm.getValue());
+                item.setBidder(bidder);
                 itemRepository.save(item);
             }
         });
         executor.submit(() -> {
+            log.info("save a bid");
+            Bid bid = bidForm.toEntity(bidder, item);
             bidRepository.save(bid);
         });
 
