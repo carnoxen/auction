@@ -1,5 +1,8 @@
 package com.zerobase.messaging;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,7 +12,5 @@ import lombok.Data;
 @Configuration
 @ConfigurationProperties("kafka")
 public class KafkaProperties {
-    private String topic;
-    private Integer partition;
-    private Integer replica;
+    private Map<String, Topic> topics = new HashMap<>();
 }

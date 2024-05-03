@@ -1,5 +1,7 @@
 package com.zerobase.endpoint;
 
+import java.util.List;
+
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -23,10 +25,11 @@ public class EndpointApplication {
     }
 
     @Bean
-    public NewTopic bidTopic() {
-        return TopicBuilder.name(kafkaProperties.getTopic())
-            .partitions(kafkaProperties.getPartition())
-            .replicas(kafkaProperties.getReplica())
-            .build();
+    public List<NewTopic> bidTopic() {
+        return kafkaProperties.getTopics().entrySet().stream()
+            .map(x -> TopicBuilder.name(x.getKey())
+            .partitions(x.getValue().getPartition())
+            .replicas(x.getValue().getReplica())
+            .build()).toList();
     }
 }

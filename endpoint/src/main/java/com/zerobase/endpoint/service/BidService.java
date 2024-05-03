@@ -9,26 +9,23 @@ import org.springframework.stereotype.Service;
 import com.zerobase.domain.entity.*;
 import com.zerobase.domain.repository.*;
 import com.zerobase.endpoint.request.BidRequest;
-import com.zerobase.messaging.KafkaProperties;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class BidService {
-    private KafkaProperties kafkaProperties;
+    private final String bidTopic = System.getProperty("bid_topic");
     private KafkaTemplate<String, BidRequest> kafkaTemplate;
     private UserRepository userRepository;
     private ItemRepository itemRepository;
     private BidRepository bidRepository;
 
     public BidService(
-        KafkaProperties kafkaProperties, 
         KafkaTemplate<String, BidRequest> kafkaTemplate,
         UserRepository userRepository,
         ItemRepository itemRepository,
         BidRepository bidRepository
     ) {
-        this.kafkaProperties = kafkaProperties;
         this.kafkaTemplate = kafkaTemplate;
         this.bidRepository = bidRepository;
         this.itemRepository = itemRepository;
@@ -37,10 +34,10 @@ public class BidService {
 
     public void createBid(BidRequest bidForm) {
         log.info("send a request to kafka to make a bid");
-        kafkaTemplate.send(kafkaProperties.getTopic(), bidForm);
+        kafkaTemplate.send(bidTopic, bidForm);
     }
 
-    @KafkaListener(topics = "${kafka.topic}")
+    @KafkaListener(topics = "${bid_topic}")
     public void saveBid(BidRequest bidForm){
         Item item = itemRepository
             .findById(bidForm.getItem_id())
