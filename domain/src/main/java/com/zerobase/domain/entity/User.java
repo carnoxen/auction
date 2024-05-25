@@ -29,14 +29,14 @@ public class User {
     private List<Item> items;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp created_at;
+    private final Timestamp createdAt;
 
     @Builder
     private User(
         String username,
-        Timestamp created_at
+        Timestamp createdAt
     ) {
         this.username = username;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
     }
 }

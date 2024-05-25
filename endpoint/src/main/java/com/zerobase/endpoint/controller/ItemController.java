@@ -1,11 +1,17 @@
 package com.zerobase.endpoint.controller;
 
+import java.net.URI;
+
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zerobase.endpoint.request.ItemRequest;
-import com.zerobase.endpoint.response.ItemResponse;
+import com.zerobase.transfer.request.ItemRequest;
+import com.zerobase.transfer.response.ItemResponse;
+
 import com.zerobase.endpoint.service.ItemService;
 
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,26 +31,69 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemResponse postUser(@RequestBody ItemRequest entity) {
-        var itemRes = itemService.createItem(entity);
-        return itemRes;
+    public ResponseEntity<Message<?>> postUser(@RequestBody ItemRequest entity) {
+        try {
+            ItemResponse itemRes = itemService.createItem(entity);
+            return ResponseEntity
+                .created(URI.create("/item/" + itemRes.getId()))
+                .body(
+                    Message.builder()
+                        .message("item created")
+                        .data(itemRes)
+                        .build()
+                );
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_ACCEPTABLE)
+                .body(
+                    Message.builder().message("owner is not found").build()
+                );
+        }
     }
     
     @GetMapping("/{id}")
-    public ItemResponse getUser(@PathVariable Long id) {
-        var itemRes = itemService.findItemById(id);
-        return itemRes;
+    public ResponseEntity<Message<?>> getUser(@PathVariable Long id) {
+        try {
+            var itemRes = itemService.findItemById(id);
+            return ResponseEntity.ok(
+                    Message.builder()
+                            .message("item found")
+                            .data(itemRes)
+                            .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                    Message.builder().message("item not found").build()
+                );
+        }
     }
     
     @PutMapping("/{id}")
-    public ItemResponse putUser(@PathVariable Long id, @RequestBody ItemRequest entity) {
-        var itemRes = itemService.editItem(entity, id);
-        return itemRes;
+    public ResponseEntity<Message<?>> putUser(@PathVariable Long id, @RequestBody ItemRequest entity) {
+        try {
+            var itemRes = itemService.editItem(entity, id);
+            return ResponseEntity.ok(
+                    Message.builder()
+                            .message("item editted")
+                            .data(itemRes)
+                            .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                    Message.builder().message("item not found").build()
+                );
+        }
     }
     
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Message<?>> deleteUser(@PathVariable Long id) {
         itemService.deleteItem(id);
-        return String.format("User id %d is deleted.", id);
+        return ResponseEntity
+                .ok(
+                        Message.builder()
+                                .message("item " + id + " deleted")
+                                .build());
     }
 }

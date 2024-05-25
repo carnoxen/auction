@@ -1,13 +1,12 @@
 package com.zerobase.endpoint.service;
 
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.zerobase.domain.entity.Item;
-import com.zerobase.domain.entity.User;
 import com.zerobase.domain.repository.ItemRepository;
 import com.zerobase.domain.repository.UserRepository;
-import com.zerobase.endpoint.request.ItemRequest;
-import com.zerobase.endpoint.response.ItemResponse;
+import com.zerobase.transfer.request.ItemRequest;
+import com.zerobase.transfer.response.ItemResponse;
 
 @Service
 public class ItemService {
@@ -22,24 +21,38 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public ItemResponse createItem(ItemRequest itemForm) {
-        var owner = userRepository
-            .findById(itemForm.getOwner_id())
-            .orElseThrow();
+    public ItemResponse createItem(ItemRequest itemForm) throws NotFoundException {
+        var opOwner = userRepository
+            .findById(itemForm.getOwnedBy());
+        if (!opOwner.isPresent()) {
+            throw new NotFoundException();
+        }
+        
+        var owner = opOwner.get();
         var item = itemForm.toEntity(owner);
+
         return ItemResponse.toForm(itemRepository.save(item));
     }
 
-    public ItemResponse findItemById(Long id) {
-        var item = itemRepository.findById(id).orElseThrow();
+    public ItemResponse findItemById(Long id) throws NotFoundException {
+        var opItem = itemRepository.findById(id);
+        if (!opItem.isPresent()) {
+            throw new NotFoundException();
+        }
+
+        var item = opItem.get();
         return ItemResponse.toForm(item);
     }
 
-    public ItemResponse editItem(ItemRequest itemForm, Long id) {
-        User owner = userRepository
-            .findById(itemForm.getOwner_id())
-            .orElseThrow();
-        Item item = itemForm.toEntity(owner);
+    public ItemResponse editItem(ItemRequest itemForm, Long id) throws NotFoundException {
+        var opOwner = userRepository
+            .findById(itemForm.getOwnedBy());
+        if (!opOwner.isPresent()) {
+            throw new NotFoundException();
+        }
+        
+        var owner = opOwner.get();
+        var item = itemForm.toEntity(owner);
         item.setId(id);
         return ItemResponse.toForm(itemRepository.save(item));
     }

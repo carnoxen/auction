@@ -8,6 +8,10 @@
  */
 
 rootProject.name = 'auction'
+// library
 include('domain')
 include('messaging')
+include('transfer')
+// implementation
 include('endpoint')
+include('consumer')

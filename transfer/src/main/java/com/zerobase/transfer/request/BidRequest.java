@@ -1,4 +1,4 @@
-package com.zerobase.endpoint.request;
+package com.zerobase.transfer.request;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -9,24 +9,22 @@ import com.zerobase.domain.entity.User;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public class BidRequest {
-    private final Long user_id;
-    private final Long item_id;
+    private final Long userId;
+    private final Long itemId;
     private final Long value;
-    private final Timestamp created_at = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    private final Timestamp createdAt = new Timestamp(Calendar.getInstance().getTimeInMillis());
 
     public Bid toEntity(User user, Item item) {
         return Bid.builder()
             .user(user)
             .item(item)
             .value(value)
-            .created_at(created_at)
+            .createdAt(createdAt)
             .build();
     }
 }
