@@ -32,18 +32,18 @@ public class Bid {
     private final Long value;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp created_at;
+    private final Timestamp createdAt;
 
     @Builder
     private Bid(
         User user, 
         Item item, 
         Long value,
-        Timestamp created_at
+        Timestamp createdAt
     ) {
         this.user = user;
         this.item = item;
         this.value = value;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
     }
 }

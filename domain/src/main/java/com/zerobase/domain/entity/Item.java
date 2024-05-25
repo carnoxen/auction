@@ -34,10 +34,10 @@ public class Item {
     private final User owner;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp created_at;
+    private final Timestamp createdAt;
     @UpdateTimestamp
     @Column(nullable = false)
-    private Timestamp updated_at;
+    private Timestamp updatedAt;
     @ManyToOne
     @JoinColumn
     private User bidder = null;
@@ -48,13 +48,13 @@ public class Item {
         Long start, 
         Integer timeout, 
         User owner,
-        Timestamp created_at
+        Timestamp createdAt
     ) {
         this.name = name;
         this.start = start;
         this.timeout = timeout;
         this.owner = owner;
-        this.created_at = created_at;
-        this.updated_at = created_at;
+        this.createdAt = createdAt;
+        this.updatedAt = createdAt;
     }
 }

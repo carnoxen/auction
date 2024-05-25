@@ -1,4 +1,4 @@
-package com.zerobase.endpoint.request;
+package com.zerobase.transfer.request;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -8,18 +8,16 @@ import com.zerobase.domain.entity.User;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public class ItemRequest {
     private final String name;
     private final Long start;
     private final Integer timeout;
-    private final Long owner_id;
-    private final Timestamp created_at = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    private final Long ownedBy;
+    private final Timestamp createdAt = new Timestamp(Calendar.getInstance().getTimeInMillis());
 
     public Item toEntity(User owner) {
         return Item.builder()
@@ -27,7 +25,7 @@ public class ItemRequest {
             .start(start)
             .timeout(timeout)
             .owner(owner)
-            .created_at(created_at)
+            .createdAt(createdAt)
             .build();
     }
 }
