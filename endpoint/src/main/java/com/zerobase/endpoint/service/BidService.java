@@ -1,5 +1,6 @@
 package com.zerobase.endpoint.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class BidService {
-    private final String bidTopic = System.getProperty("bid_topic");
+    @Value("${bid_topic}")
+    private String bidTopic;
     private KafkaTemplate<String, BidRequest> kafkaTemplate;
 
     public BidService(
