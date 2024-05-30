@@ -18,23 +18,23 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
+@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 public class Item {
     @Id
     @Tsid
     private Long id;
     @Column(nullable = false)
-    private final String name;
+    private String name;
     @Column(nullable = false)
     private Long start;
     @Column(nullable = false)
-    private final Integer timeout;
+    private Integer timeout;
     @ManyToOne
     @JoinColumn(nullable = false)
-    private final User owner;
+    private User owner;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp createdAt;
+    private Timestamp createdAt;
     @UpdateTimestamp
     @Column(nullable = false)
     private Timestamp updatedAt;

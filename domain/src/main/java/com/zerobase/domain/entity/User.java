@@ -18,18 +18,18 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
+@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 public class User {
     @Id
     @Tsid
     private Long id;
     @Column(unique = true)
-    private final String username;
+    private String username;
     @OneToMany(mappedBy = "owner")
     private List<Item> items;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp createdAt;
+    private Timestamp createdAt;
 
     @Builder
     private User(

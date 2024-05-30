@@ -17,22 +17,22 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
+@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 public class Bid {
     @Id
     @Tsid
     private Long id;
     @ManyToOne
     @JoinColumn(nullable = false)
-    private final User user;
+    private User user;
     @ManyToOne
     @JoinColumn(nullable = false)
-    private final Item item;
+    private Item item;
     @Column(nullable = false)
-    private final Long value;
+    private Long value;
     @CreationTimestamp
     @Column(nullable = false)
-    private final Timestamp createdAt;
+    private Timestamp createdAt;
 
     @Builder
     private Bid(
